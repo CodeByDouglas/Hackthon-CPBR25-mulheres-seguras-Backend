@@ -1,0 +1,7 @@
+Flask==3.1.1
+Flask-Login          # Autenticação de usuários (sessões)
+Flask-SQLAlchemy     # ORM para SQLite e modelos de dados
+Flask-APScheduler    # Tarefas agendadas no Flask (usando APScheduler)
+flask-socketio       # (Opcional) WebSockets para comunicação em tempo real
+twilio               # SDK oficial da Twilio para SMS
+python-dotenv        # Carrega variáveis de ambiente de um arquivo .env
