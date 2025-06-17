@@ -28,7 +28,7 @@
 <body>
     <div class="container">
         <div class="user-info">
-            <img src="{{ user.photo }}" alt="Foto do usuário" class="user-photo">
+            <img src="https://via.placeholder.com/150" alt="Foto do usuário" class="user-photo">
             <h2>{{ user.nome }}</h2>
         </div>
         <div id="map"></div>
@@ -37,7 +37,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // Inicializa o mapa
-        const map = L.map('map').setView([{{ last_location.lat }}, {{ last_location.lng }}], 15);
+        const map = L.map('map').setView([{{ call.localizacao_atual.split(',')[0] }}, {{ call.localizacao_atual.split(',')[1] }}], 15);
         
         // Adiciona o tile layer do OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -45,17 +45,32 @@
         }).addTo(map);
 
         // Adiciona o marcador com a última localização
-        L.marker([{{ last_location.lat }}, {{ last_location.lng }}])
+        L.marker([{{ call.localizacao_atual.split(',')[0] }}, {{ call.localizacao_atual.split(',')[1] }}])
             .addTo(map)
             .bindPopup('Última localização conhecida')
             .openPopup();
 
         // Desenha a rota se houver pontos
-        {% if route %}
-        const routePoints = {{ route|tojson }};
+        const routePoints = {{ call.route|tojson }};
         const polyline = L.polyline(routePoints, {color: 'red'}).addTo(map);
         map.fitBounds(polyline.getBounds());
-        {% endif %}
+
+        // Função para atualizar a rota a cada 1 minuto
+        function updateRoute() {
+            fetch('/contacts/{{ user.token_nfc }}/{{ call.id }}/route')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.route && data.route.length > 0) {
+                        const newRoutePoints = data.route;
+                        polyline.setLatLngs(newRoutePoints);
+                        map.fitBounds(polyline.getBounds());
+                    }
+                })
+                .catch(error => console.error('Erro ao atualizar rota:', error));
+        }
+
+        // Atualiza a rota a cada 1 minuto
+        setInterval(updateRoute, 60000);
     </script>
 </body>
 </html> 

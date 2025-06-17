@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify
+from app.models.database import db
 from app.models.user import User
 from app.models.emergency_call import EmergencyCall
 
 bp = Blueprint('tracking', __name__)
 
-@bp.route('/<token_nfc>/<int:call_id>')
+@bp.route('/contacts/<token_nfc>/<int:call_id>')
 def tracking_page(token_nfc, call_id):
     # Busca o usuário pelo token NFC
     user = User.query.filter_by(token_nfc=token_nfc).first()
@@ -12,7 +13,7 @@ def tracking_page(token_nfc, call_id):
         return "Usuário não encontrado", 404
 
     # Busca o chamado de emergência
-    emergency_call = EmergencyCall.query.get(call_id)
+    emergency_call = EmergencyCall.query.filter_by(id=call_id, user_id=user.id).first()
     if not emergency_call:
         return "Chamado não encontrado", 404
 
@@ -41,3 +42,15 @@ def tracking_page(token_nfc, call_id):
                          user=user,
                          last_location=last_location,
                          route=emergency_call.route)
+
+@bp.route('/contacts/<token_nfc>/<int:call_id>/route')
+def get_route(token_nfc, call_id):
+    user = User.query.filter_by(token_nfc=token_nfc).first()
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+    
+    call = EmergencyCall.query.filter_by(id=call_id, user_id=user.id).first()
+    if not call:
+        return jsonify({"error": "Chamado não encontrado"}), 404
+    
+    return jsonify({"route": call.route})
