@@ -16,7 +16,7 @@ def create_app():
     # Configuração do app
     app.config.from_mapping({
         'SECRET_KEY': 'uma-chave-secreta-aqui',
-        'SQLALCHEMY_DATABASE_URI': 'sqlite://database.db',
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///database.db',
         'SCHEDULER_API_ENABLED': True
     })
 
