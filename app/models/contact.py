@@ -1,12 +1,14 @@
 # app/models/contact.py
-from app.models.base import db
+from app.models.database import db
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 class Contact(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    telefone = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(120))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    __tablename__ = 'contact'
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(100), nullable=False)
+    telefone = Column(String(20), nullable=False)
+    email = Column(String(120))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f'<Contact {self.nome}>'

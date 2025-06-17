@@ -1,5 +1,5 @@
 # app/models/user.py
-from app.models.base import db
+from app.models.database import db
 from flask_login import UserMixin
 from datetime import datetime
 
