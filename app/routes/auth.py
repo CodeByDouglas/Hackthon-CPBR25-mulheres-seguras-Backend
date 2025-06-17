@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required
-from werkzeug.security import generate_password_hash
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.base import db
 from app.models.user import User
 from app.models.contact import Contact
@@ -75,11 +75,36 @@ def register():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@bp.route('/login', methods=['GET', 'POST'])
+@bp.route('/login', methods=['POST'])
 def login():
-    return jsonify({'message': 'Endpoint de login'})
+    try:
+        data = request.get_json()
+        
+        # Validação dos dados obrigatórios
+        if not data or 'email' not in data or 'password' not in data:
+            return jsonify({'error': 'Email e senha são obrigatórios'}), 400
+        
+        # Busca o usuário pelo email
+        user = User.query.filter_by(email=data['email']).first()
+        
+        # Verifica se o usuário existe e se a senha está correta
+        if not user or not check_password_hash(user.password, data['password']):
+            return jsonify({'error': 'Email ou senha inválidos'}), 401
+        
+        # Faz o login do usuário
+        login_user(user)
+        
+        return jsonify({
+            'message': 'Login realizado com sucesso',
+            'user': {
+                'id': user.id,
+                'nome': user.nome,
+                'email': user.email,
+                'token_nfc': user.token_nfc
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@bp.route('/logout')
-@login_required
-def logout():
-    return jsonify({'message': 'Endpoint de logout'})
+
