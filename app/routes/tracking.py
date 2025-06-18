@@ -7,6 +7,10 @@ bp = Blueprint('tracking', __name__)
 
 @bp.route('/<token_nfc>/<int:call_id>')
 def tracking_page(token_nfc, call_id):
+    """
+    Renderiza a página de rastreamento de um chamado de emergência ativo para o usuário identificado pelo token NFC e pelo ID do chamado.
+    Retorna página HTML com informações do usuário e mapa.
+    """
     # Busca o usuário pelo token NFC
     user = User.query.filter_by(token_nfc=token_nfc).first()
     if not user:
@@ -46,6 +50,10 @@ def tracking_page(token_nfc, call_id):
 
 @bp.route('/<token_nfc>/<int:call_id>/route')
 def get_route(token_nfc, call_id):
+    """
+    Retorna a rota (lista de localizações) do chamado de emergência para o usuário e chamado informados.
+    Resposta em JSON.
+    """
     user = User.query.filter_by(token_nfc=token_nfc).first()
     if not user:
         return jsonify({"error": "Usuário não encontrado"}), 404
