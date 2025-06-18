@@ -181,3 +181,30 @@ def close_call():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": f"Erro ao encerrar chamado: {str(e)}"}), 500
+
+@bp.route('/add-contact', methods=['POST'])
+def add_contact():
+    data = request.get_json()
+    token_nfc = data.get('token_nfc')
+    contact_data = data.get('contact')
+    if not token_nfc or not contact_data:
+        return jsonify({"success": False, "error": "Token NFC e dados do contato são obrigatórios"}), 400
+
+    user = User.query.filter_by(token_nfc=token_nfc).first()
+    if not user:
+        return jsonify({"success": False, "error": "Usuário não encontrado para o token informado"}), 404
+
+    from app.models.contact import Contact
+    new_contact = Contact(
+        user_id=user.id,
+        nome=contact_data.get('nome'),
+        telefone=contact_data.get('telefone'),
+        email=contact_data.get('email')
+    )
+    try:
+        db.session.add(new_contact)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Contato cadastrado com sucesso", "contact_id": new_contact.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": f"Erro ao cadastrar contato: {str(e)}"}), 500
