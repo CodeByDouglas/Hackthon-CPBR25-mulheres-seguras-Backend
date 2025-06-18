@@ -1,9 +1,47 @@
 function confirmEmergency() {
-    // Função será implementada posteriormente
-    console.log('Confirmar emergência');
+    // Obtém o token NFC da URL
+    const token = window.location.pathname.split('/').pop();
+    
+    fetch(`/emergency/confirm/${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/emergency/success/active';
+        } else {
+            alert('Erro ao confirmar emergência: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao processar a requisição');
+    });
 }
 
 function abortEmergency() {
-    // Função será implementada posteriormente
-    console.log('Abortar emergência');
+    // Obtém o token NFC da URL
+    const token = window.location.pathname.split('/').pop();
+    
+    fetch(`/emergency/abort/${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/emergency/success/aborted';
+        } else {
+            alert('Erro ao abortar emergência: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao processar a requisição');
+    });
 } 

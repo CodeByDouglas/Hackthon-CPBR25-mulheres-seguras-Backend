@@ -3,6 +3,7 @@ from app.models.database import db
 from app.models.user import User
 from app.models.emergency_call import EmergencyCall
 from sqlalchemy.orm.attributes import flag_modified
+from datetime import datetime
 
 bp = Blueprint('emergency', __name__)
 
@@ -20,6 +21,75 @@ def confirm_emergency(token):
     
     # Renderiza a página de confirmação
     return render_template('confirm_emergency.html')
+
+@bp.route('/confirm/<token>', methods=['POST'])
+def create_emergency(token):
+    # Busca o usuário pelo token NFC
+    user = User.query.filter_by(token_nfc=token).first()
+    
+    if not user:
+        return jsonify({"success": False, "error": "Token NFC inválido"}), 404
+    
+    # Verifica se já existe um chamado ativo
+    active_call = EmergencyCall.query.filter_by(
+        user_id=user.id,
+        status="Ativo"
+    ).first()
+    
+    if active_call:
+        return jsonify({"success": False, "error": "Já existe um chamado ativo para este usuário"}), 400
+    
+    # Cria um novo chamado de emergência
+    new_call = EmergencyCall(
+        user_id=user.id,
+        status="Ativo",
+        route=[],
+        token_nfc=token,
+        localizacao_atual=None
+    )
+    
+    try:
+        db.session.add(new_call)
+        db.session.commit()
+        return jsonify({
+            "success": True,
+            "call_id": new_call.id,
+            "message": "Chamado de emergência criado com sucesso"
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": f"Erro ao criar chamado: {str(e)}"}), 500
+
+@bp.route('/abort/<token>', methods=['POST'])
+def abort_emergency(token):
+    # Busca o usuário pelo token NFC
+    user = User.query.filter_by(token_nfc=token).first()
+    
+    if not user:
+        return jsonify({"success": False, "error": "Token NFC inválido"}), 404
+    
+    # Busca o chamado ativo
+    active_call = EmergencyCall.query.filter_by(
+        user_id=user.id,
+        status="Ativo"
+    ).first()
+    
+    if not active_call:
+        return jsonify({"success": False, "error": "Não há chamado ativo para este usuário"}), 404
+    
+    # Atualiza o status do chamado
+    active_call.status = "Abortado"
+    active_call.data_fim = datetime.now()
+    
+    try:
+        db.session.commit()
+        return jsonify({
+            "success": True,
+            "message": "Chamado abortado com sucesso"
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": f"Erro ao abortar chamado: {str(e)}"}), 500
 
 @bp.route('/update-location', methods=['POST'])
 def update_location():
@@ -79,3 +149,11 @@ def update_location():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Erro ao atualizar localização: {str(e)}"}), 500
+
+@bp.route('/success/active')
+def emergency_active_page():
+    return render_template('emergency_active.html')
+
+@bp.route('/success/aborted')
+def emergency_aborted_page():
+    return render_template('emergency_aborted.html')
