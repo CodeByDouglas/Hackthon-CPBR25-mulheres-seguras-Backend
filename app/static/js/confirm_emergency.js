@@ -1,4 +1,9 @@
+let emergencyTimeout = setTimeout(() => {
+    confirmEmergency();
+}, 30000); // 30 segundos
+
 function confirmEmergency() {
+    clearTimeout(emergencyTimeout); // Cancela o timeout se o usuário clicar
     // Obtém o token NFC da URL
     const token = window.location.pathname.split('/').pop();
     
@@ -23,6 +28,7 @@ function confirmEmergency() {
 }
 
 function abortEmergency() {
+    clearTimeout(emergencyTimeout); // Cancela o timeout se o usuário clicar
     // Obtém o token NFC da URL
     const token = window.location.pathname.split('/').pop();
     
