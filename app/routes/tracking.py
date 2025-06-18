@@ -5,7 +5,7 @@ from app.models.emergency_call import EmergencyCall
 
 bp = Blueprint('tracking', __name__)
 
-@bp.route('/contacts/<token_nfc>/<int:call_id>')
+@bp.route('/<token_nfc>/<int:call_id>')
 def tracking_page(token_nfc, call_id):
     # Busca o usuário pelo token NFC
     user = User.query.filter_by(token_nfc=token_nfc).first()
@@ -40,10 +40,11 @@ def tracking_page(token_nfc, call_id):
 
     return render_template('tracking.html',
                          user=user,
+                         call=emergency_call,
                          last_location=last_location,
                          route=emergency_call.route)
 
-@bp.route('/contacts/<token_nfc>/<int:call_id>/route')
+@bp.route('/<token_nfc>/<int:call_id>/route')
 def get_route(token_nfc, call_id):
     user = User.query.filter_by(token_nfc=token_nfc).first()
     if not user:

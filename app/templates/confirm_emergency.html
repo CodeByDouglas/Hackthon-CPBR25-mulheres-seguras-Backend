@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Emergência</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 2rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .confirm:hover {
+            background-color: #c0392b;
+        }
+        .abort {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .abort:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alerta de Emergência</h1>
+        <p>Um alerta de emergência foi acionado. Por favor, confirme se é uma emergência real.</p>
+        <div class="button-group">
+            <button class="confirm" onclick="confirmEmergency()">Confirmar Emergência</button>
+            <button class="abort" onclick="abortEmergency()">Abortar</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmEmergency() {
+            // Função será implementada posteriormente
+            console.log('Confirmar emergência');
+        }
+
+        function abortEmergency() {
+            // Função será implementada posteriormente
+            console.log('Abortar emergência');
+        }
+    </script>
+</body>
+</html> 

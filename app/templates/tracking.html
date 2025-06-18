@@ -6,24 +6,7 @@
     <title>Rastreamento de Emergência</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #map {
-            height: 500px;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .user-info {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .user-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tracking.css') }}" />
 </head>
 <body>
     <div class="container">
@@ -36,41 +19,12 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Inicializa o mapa
-        const map = L.map('map').setView([{{ call.localizacao_atual.split(',')[0] }}, {{ call.localizacao_atual.split(',')[1] }}], 15);
-        
-        // Adiciona o tile layer do OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Adiciona o marcador com a última localização
-        L.marker([{{ call.localizacao_atual.split(',')[0] }}, {{ call.localizacao_atual.split(',')[1] }}])
-            .addTo(map)
-            .bindPopup('Última localização conhecida')
-            .openPopup();
-
-        // Desenha a rota se houver pontos
-        const routePoints = {{ call.route|tojson }};
-        const polyline = L.polyline(routePoints, {color: 'red'}).addTo(map);
-        map.fitBounds(polyline.getBounds());
-
-        // Função para atualizar a rota a cada 1 minuto
-        function updateRoute() {
-            fetch('/contacts/{{ user.token_nfc }}/{{ call.id }}/route')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.route && data.route.length > 0) {
-                        const newRoutePoints = data.route;
-                        polyline.setLatLngs(newRoutePoints);
-                        map.fitBounds(polyline.getBounds());
-                    }
-                })
-                .catch(error => console.error('Erro ao atualizar rota:', error));
-        }
-
-        // Atualiza a rota a cada 1 minuto
-        setInterval(updateRoute, 60000);
+        window.routePoints = {{ call.route|tojson }};
+        window.lat = {{ call.localizacao_atual.split(',')[0]|float }};
+        window.lng = {{ call.localizacao_atual.split(',')[1]|float }};
+        window.token_nfc = "{{ user.token_nfc }}";
+        window.call_id = {{ call.id }};
     </script>
+    <script src="{{ url_for('static', filename='js/tracking.js') }}"></script>
 </body>
 </html> 

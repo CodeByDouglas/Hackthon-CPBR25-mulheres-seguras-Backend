@@ -40,7 +40,7 @@ def create_app():
         # Registro dos blueprints
         app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(users_bp, url_prefix='/users')
-        app.register_blueprint(contacts_bp, url_prefix='/contacts')
+        app.register_blueprint(contacts_bp)
         app.register_blueprint(emergency_bp, url_prefix='/emergency')
 
     return app
