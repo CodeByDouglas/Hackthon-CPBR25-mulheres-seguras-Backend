@@ -208,3 +208,30 @@ def add_contact():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": f"Erro ao cadastrar contato: {str(e)}"}), 500
+
+@bp.route('/calls/<token_nfc>', methods=['GET'])
+def get_user_calls(token_nfc):
+    user = User.query.filter_by(token_nfc=token_nfc).first()
+    if not user:
+        return jsonify({"success": False, "error": "Usuário não encontrado para o token informado"}), 404
+
+    calls = EmergencyCall.query.filter_by(user_id=user.id).all()
+    calls_list = [
+        {
+            "id": call.id,
+            "status": call.status,
+            "date": str(call.date),
+            "start_time": str(call.start_time),
+            "end_time": str(call.end_time) if call.end_time else None,
+            "route": call.route,
+            "token_nfc": call.token_nfc,
+            "localizacao_atual": call.localizacao_atual
+        }
+        for call in calls
+    ]
+    has_active = any(call.status == "Ativo" for call in calls)
+    return jsonify({
+        "success": True,
+        "calls": calls_list,
+        "has_active": has_active
+    }), 200
