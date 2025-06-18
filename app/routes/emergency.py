@@ -157,3 +157,27 @@ def emergency_active_page():
 @bp.route('/success/aborted')
 def emergency_aborted_page():
     return render_template('emergency_aborted.html')
+
+@bp.route('/close-call', methods=['POST'])
+def close_call():
+    data = request.get_json()
+    token_nfc = data.get('token_nfc')
+    if not token_nfc:
+        return jsonify({"success": False, "error": "Token NFC não fornecido"}), 400
+
+    user = User.query.filter_by(token_nfc=token_nfc).first()
+    if not user:
+        return jsonify({"success": False, "error": "Usuário não encontrado para o token informado"}), 404
+
+    active_call = EmergencyCall.query.filter_by(user_id=user.id, status="Ativo").first()
+    if not active_call:
+        return jsonify({"success": False, "error": "Nenhum chamado ativo encontrado para este usuário"}), 404
+
+    active_call.status = "Encerrado"
+    active_call.end_time = datetime.now().time()
+    try:
+        db.session.commit()
+        return jsonify({"success": True, "message": "Chamado encerrado com sucesso"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": f"Erro ao encerrar chamado: {str(e)}"}), 500
