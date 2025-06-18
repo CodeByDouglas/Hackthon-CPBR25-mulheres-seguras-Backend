@@ -9,14 +9,47 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tracking.css') }}" />
 </head>
 <body>
-    <div class="container">
+    <div class="tracking-container">
         <div class="user-info">
-            <img src="https://via.placeholder.com/150" alt="Foto do usuário" class="user-photo">
-            <h2>{{ user.nome }}</h2>
+            <img src="/{{ user.photo }}" alt="Foto do usuário" class="user-photo">
+            <div class="user-name">{{ user.nome }}</div>
+            <div style="
+                background: rgba(177, 139, 228, 0.13); 
+                color: #b18be4;
+                border: 2px solid #b18be4;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 1.08rem;
+                margin: 0.7rem 0 0.7rem 0;
+                padding: 0.7rem 1rem;
+                text-align: center;
+                box-shadow: 0 2px 8px 0 rgba(177, 139, 228, 0.10);
+            ">
+                {{ user.nome }} está precisando de ajuda!<br>Esta localização está sendo monitorada em tempo real.
+            </div>
         </div>
         <div id="map"></div>
+        <a id="btn-google-maps"
+           href="#"
+           style="
+                display: block;
+                margin: 1.2rem auto 0 auto;
+                background: linear-gradient(90deg, #b18be4 0%, #8f6fc1 100%);
+                color: #23243a;
+                font-weight: 700;
+                border: none;
+                border-radius: 10px;
+                padding: 0.7rem 1.5rem;
+                font-size: 1.08rem;
+                box-shadow: 0 2px 8px 0 rgba(177, 139, 228, 0.10);
+                text-align: center;
+                text-decoration: none;
+                transition: filter 0.2s;
+           "
+           target="_blank">
+            Ver localização no Google Maps
+        </a>
     </div>
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         window.routePoints = {{ call.route|tojson }};
@@ -24,6 +57,11 @@
         window.lng = {{ call.localizacao_atual.split(',')[1]|float }};
         window.token_nfc = "{{ user.token_nfc }}";
         window.call_id = {{ call.id }};
+        // Atualiza o link do botão para o Google Maps
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btn-google-maps').href =
+                `https://www.google.com/maps?q=${window.lat},${window.lng}`;
+        });
     </script>
     <script src="{{ url_for('static', filename='js/tracking.js') }}"></script>
 </body>
