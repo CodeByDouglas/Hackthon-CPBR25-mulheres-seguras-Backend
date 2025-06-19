@@ -152,3 +152,38 @@
 }
 ```
 - 404 Not Found: `{ "success": false, "error": "Usuário não encontrado para o token informado" }` 
+
+---
+
+## /nfc/auto/<token>
+**Método:** GET  
+**Descrição:** Cria um chamado de emergência imediatamente ao receber o token NFC, salva coordenadas iniciais (se fornecidas) e envia SMS para todos os contatos de emergência do usuário.
+
+**Variáveis esperadas:**
+- token (na URL): Token NFC do usuário
+- lat (query string, opcional): Latitude inicial (float)
+- lng (query string, opcional): Longitude inicial (float)
+
+**Retorno:**
+- 201 Created: 
+  - Sucesso total: `{ "success": true, "call_id": <id>, "message": "Chamado de emergência criado e SMS enviados com sucesso" }`
+  - Sucesso parcial: `{ "success": false, "call_id": <id>, "message": "Chamado criado mas houve erros no envio de SMS", "sms_errors": [...] }`
+- 400 Bad Request: 
+  - `{ "success": false, "error": "Já existe um chamado ativo para este usuário" }`
+  - `{ "error": "Latitude e longitude devem ser números válidos" }`
+- 404 Not Found: `{ "success": false, "error": "Token NFC inválido" }`
+- 500 Internal Server Error: `{ "success": false, "error": "Erro ao criar chamado: ..." }`
+
+---
+
+## /delete-contact/<contact_id>
+**Método:** DELETE  
+**Descrição:** Remove um contato de emergência pelo ID.
+
+**Variáveis esperadas:**
+- contact_id (na URL): ID do contato a ser removido
+
+**Retorno:**
+- 200 OK: `{ "success": true, "message": "Contato removido com sucesso" }`
+- 404 Not Found: `{ "success": false, "error": "Contato não encontrado" }`
+- 500 Internal Server Error: `{ "success": false, "error": "Erro ao remover contato: ..." }` 
