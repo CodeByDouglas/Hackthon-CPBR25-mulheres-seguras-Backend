@@ -1,21 +1,44 @@
-# E.L.A. - Projeto Mulheres Seguras
+# E.L.A. Backend - Servidor de Segurança Pessoal
 
-![Logo do Projeto](https://via.placeholder.com/600x200.png/4a1d35/f5d5e2?text=E.L.A.+%E2%80%A2+Mulheres+Seguras)
+![Logo do Projeto](https://via.placeholder.com/600x200.png/4a1d35/f5d5e2?text=E.L.A.+%E2%80%A2+Backend)
 
-**E.L.A.** (Emergency Location Alert) é uma plataforma de segurança pessoal desenvolvida para a Hackathon CPBR25, com o objetivo de oferecer uma ferramenta rápida e eficaz para que mulheres em situação de perigo possam pedir ajuda.
-
-Através de um dispositivo NFC (como um adesivo ou chaveiro), a usuária pode acionar um alerta de emergência de forma discreta, notificando seus contatos de confiança e compartilhando sua localização em tempo real.
+O **E.L.A. Backend** é o servidor central da plataforma de segurança pessoal E.L.A. (Emergency Location Alert), desenvolvido em Flask para a Hackathon CPBR25. Ele é responsável por processar alertas de emergência, gerenciar dados de usuários, notificar contatos e fornecer páginas de rastreamento em tempo real.
 
 ---
 
-## 🚀 Funcionalidades Principais
+## 🏗️ Arquitetura do Projeto
 
--   **Alerta Rápido via NFC**: Acione um chamado de emergência simplesmente aproximando o celular de um dispositivo NFC.
--   **Notificações Automáticas por SMS**: Contatos de segurança pré-cadastrados recebem um SMS instantâneo com um link para rastreamento.
--   **Rastreamento em Tempo Real**: Uma página web segura exibe a rota da usuária em um mapa, atualizada continuamente.
--   **Mapa de Calor de Incidentes**: Visualize um mapa de calor que mostra as áreas com maior frequência de chamados, ajudando a identificar zonas de risco.
--   **API Robusta**: Endpoints REST bem documentados que permitem a integração com diferentes clientes (e.g., aplicativo Android).
--   **Gerenciamento de Contatos**: Usuárias podem adicionar e remover seus contatos de emergência.
+Este repositório contém **apenas o backend** da solução E.L.A. Ele se comunica tanto com o aplicativo de interface do usuário quanto com o aplicativo que roda em segundo plano.
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   E.L.A.        │    │   E.L.A.         │    │   E.L.A.        │
+│   Background    │◄───┤   Backend        │───►│   Frontend      │
+│   (Flutter)     │    │   (Este Projeto) │    │   (Kotlin)      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       ▲                       │
+         │                       │                       │
+         ▼                       │                       ▼
+   Acionamento NFC         ✅ Processamento          Interface de
+   Envio de Coordenadas    ✅ Notificação SMS         Cadastro
+                           ✅ Rastreamento em         Gerenciamento
+                              Tempo Real              de Contatos
+                           ✅ Mapa de Calor           Histórico
+```
+
+- **[E.L.A. Background (Flutter)](https://github.com/CodeByDouglas/CodeByDouglas-Hackthon-CPBR25-mulheres-seguras-App-Background )**: App que monitora a tag NFC e envia os dados de localização.
+- **[E.L.A. Frontend (Kotlin)](https://github.com/EduFrancaDev/Projeto-ELA)**: App principal para cadastro de perfil, contatos e visualização do histórico.
+
+---
+
+## 🚀 Funcionalidades do Backend
+
+-   **API RESTful Robusta**: Endpoints para gerenciar usuários, contatos e chamados de emergência.
+-   **Notificações Automáticas via SMS**: Integração com Twilio para enviar alertas instantâneos para contatos de segurança.
+-   **Geração de Páginas de Rastreamento**: Cria URLs únicas e seguras para visualização da localização da usuária em tempo real.
+-   **Mapa de Calor de Incidentes**: Endpoint que agrega todos os dados de chamados para gerar um mapa de calor, identificando áreas de risco.
+-   **Gerenciamento de Banco de Dados**: Persistência de dados de usuários, contatos, chamados e rotas com SQLite.
+-   **Scripts de Seed**: Facilita a criação de dados de teste para desenvolvimento e demonstração.
 
 ---
 
@@ -24,8 +47,8 @@ Através de um dispositivo NFC (como um adesivo ou chaveiro), a usuária pode ac
 -   **Backend**: Flask (Python)
 -   **Banco de Dados**: SQLite (com Flask-SQLAlchemy)
 -   **Notificações**: Twilio (para envio de SMS)
--   **Frontend**: HTML, CSS, JavaScript
--   **Mapas**: Leaflet.js (com plugins Leaflet.heat)
+-   **Frontend (Páginas Web)**: HTML, CSS, JavaScript
+-   **Mapas**: Leaflet.js (com plugin Leaflet.heat)
 -   **Ambiente**: Python 3, venv
 
 ---
@@ -40,8 +63,8 @@ Através de um dispositivo NFC (como um adesivo ou chaveiro), a usuária pode ac
 │   ├── services/         # Lógica de serviços (e.g., Twilio)
 │   ├── static/           # Arquivos estáticos (CSS, JS, Imagens)
 │   └── templates/        # Templates HTML (Jinja2)
-├── docs/                 # Documentação do projeto
-├── instance/             # Arquivos de instância (banco de dados)
+├── docs/                 # Documentação do projeto (API, etc.)
+├── instance/             # Arquivos de instância (banco de dados .db)
 ├── scripts/              # Scripts de utilidade (e.g., popular o banco)
 └── requirements.txt      # Dependências do projeto
 ```
@@ -97,7 +120,7 @@ Para ter dados de exemplo (usuários e chamados em Brasília para o mapa de calo
 # Limpa o banco, cria um usuário de teste e popula o heatmap
 PYTHONPATH=. python3 scripts/seed.py --all
 ```
-*Use `python3 scripts/seed.py --help` para ver outras opções.*
+*Use `python3 scripts/seed.py --help` para ver outras opções (`--clear`, `--heatmap`).*
 
 ### 2. Inicie o Servidor Flask
 Com o ambiente virtual ativado, execute:
@@ -108,15 +131,23 @@ O servidor estará disponível em `http://127.0.0.1:5000`.
 
 ### 3. Acesse as Páginas
 -   **Mapa de Calor**: `http://127.0.0.1:5000/emergency/heatmap`
--   **Rastreamento (Exemplo)**: Use o endpoint de criação de chamado (`/emergency/nfc/auto/<token>`) e acesse o link de rastreamento gerado.
+-   **Rastreamento (Exemplo)**: Acione o endpoint `/emergency/nfc/auto/TOKEN_TESTE_123` para criar um chamado e use o link que seria enviado por SMS.
 
 ---
 
-##  документи API
+## 📖 Documentação da API
 
 A documentação detalhada dos endpoints, incluindo exemplos de requisição e resposta, está disponível em:
 
 -   **[Guia de Integração dos Endpoints de Emergência](./docs/endpoints_integracao.md)**
+-   **[Guia de Endpoints de Rastreamento](./docs/endpoints_tracking.md)**
 
----
+
+
+
+
+
+**Desenvolvido com ❤️ para promover a segurança para mulheres**
+
+*Projeto desenvolvido durante o Hackathon CPBR25 - Mulheres Seguras*
 
