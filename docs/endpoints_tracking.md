@@ -1,23 +1,23 @@
-# Documentação de Endpoints - Rotas de Tracking
+# Documentação de Endpoints - Rotas de Tracking (`/tracking`)
 
-## /<token_nfc>/<call_id>
+## /tracking/<token_nfc>/<call_id>
 **Método:** GET  
-**Descrição:** Renderiza a página de rastreamento de um chamado de emergência ativo para o usuário identificado pelo token NFC e pelo ID do chamado.
+**Descrição:** Renderiza a página de rastreamento de um chamado de emergência ativo.
 
 **Variáveis esperadas:**
 - token_nfc (na URL): Token NFC do usuário
 - call_id (na URL): ID do chamado de emergência
 
 **Retorno:**
-- 200 OK: Página HTML de rastreamento com informações do usuário e mapa
+- 200 OK: Página HTML de rastreamento com mapa.
 - 403 Forbidden: "Acesso não autorizado" ou "Este chamado já foi encerrado"
 - 404 Not Found: "Usuário não encontrado" ou "Chamado não encontrado"
 
 ---
 
-## /<token_nfc>/<call_id>/route
+## /tracking/<token_nfc>/<call_id>/route
 **Método:** GET  
-**Descrição:** Retorna a rota (lista de localizações) do chamado de emergência para o usuário e chamado informados.
+**Descrição:** Retorna a rota (lista de localizações) de um chamado para atualização dinâmica no mapa.
 
 **Variáveis esperadas:**
 - token_nfc (na URL): Token NFC do usuário

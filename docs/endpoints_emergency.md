@@ -1,6 +1,8 @@
-# Documentação de Endpoints - Rotas de Emergência
+# Documentação de Endpoints - Rotas de Emergência (`/emergency`)
 
-## /ping
+Esta documentação descreve os endpoints disponíveis sob o prefixo `/emergency`.
+
+## /emergency/ping
 **Método:** GET  
 **Descrição:** Endpoint de teste para verificar se o serviço está online. Retorna 'pong-emergency'.
 
@@ -10,7 +12,7 @@
 
 ---
 
-## /nfc/<token>
+## /emergency/nfc/<token>
 **Método:** GET  
 **Descrição:** Renderiza a página de confirmação de emergência ao receber um token NFC válido. Exibe opções para confirmar ou abortar o chamado.
 
@@ -23,7 +25,7 @@
 
 ---
 
-## /confirm/<token>
+## /emergency/confirm/<token>
 **Método:** POST  
 **Descrição:** Cria um novo chamado de emergência ativo para o usuário do token NFC recebido.
 
@@ -38,7 +40,7 @@
 
 ---
 
-## /abort/<token>
+## /emergency/abort/<token>
 **Método:** POST  
 **Descrição:** Aborta o chamado de emergência ativo do usuário do token NFC recebido.
 
@@ -52,7 +54,7 @@
 
 ---
 
-## /update-location
+## /emergency/update-location
 **Método:** POST  
 **Descrição:** Atualiza a localização do usuário durante um chamado ativo.
 
@@ -69,7 +71,7 @@
 
 ---
 
-## /success/active
+## /emergency/success/active
 **Método:** GET  
 **Descrição:** Renderiza a página de sucesso para chamado de emergência ativo, informando que a localização está sendo compartilhada.
 
@@ -79,7 +81,7 @@
 
 ---
 
-## /success/aborted
+## /emergency/success/aborted
 **Método:** GET  
 **Descrição:** Renderiza a página de sucesso para chamado de emergência abortado.
 
@@ -89,7 +91,7 @@
 
 ---
 
-## /close-call
+## /emergency/close-call
 **Método:** POST  
 **Descrição:** Encerra o chamado ativo do usuário identificado pelo token NFC recebido.
 
@@ -104,7 +106,7 @@
 
 ---
 
-## /add-contact
+## /emergency/add-contact
 **Método:** POST  
 **Descrição:** Cadastra um novo contato de emergência vinculado ao usuário do token NFC recebido.
 
@@ -123,7 +125,7 @@
 
 ---
 
-## /calls/<token_nfc>
+## /emergency/calls/<token_nfc>
 **Método:** GET  
 **Descrição:** Retorna todos os chamados do usuário do token NFC informado e indica se há algum chamado ativo.
 
@@ -155,7 +157,7 @@
 
 ---
 
-## /nfc/auto/<token>
+## /emergency/nfc/auto/<token>
 **Método:** GET  
 **Descrição:** Cria um chamado de emergência imediatamente ao receber o token NFC, salva coordenadas iniciais (se fornecidas) e envia SMS para todos os contatos de emergência do usuário.
 
@@ -176,7 +178,7 @@
 
 ---
 
-## /delete-contact/<contact_id>
+## /emergency/delete-contact/<contact_id>
 **Método:** DELETE  
 **Descrição:** Remove um contato de emergência pelo ID.
 
@@ -186,4 +188,14 @@
 **Retorno:**
 - 200 OK: `{ "success": true, "message": "Contato removido com sucesso" }`
 - 404 Not Found: `{ "success": false, "error": "Contato não encontrado" }`
-- 500 Internal Server Error: `{ "success": false, "error": "Erro ao remover contato: ..." }` 
+- 500 Internal Server Error: `{ "success": false, "error": "Erro ao remover contato: ..." }`
+
+---
+
+## /emergency/heatmap
+**Método:** GET  
+**Descrição:** Renderiza a página do mapa de calor com a frequência de chamados.
+
+---
+
+**Nota:** Os endpoints de integração (`/update-location` e `/nfc/auto/<token>`) estão documentados em detalhes no arquivo `endpoints_integracao.md`. 

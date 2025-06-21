@@ -3,9 +3,10 @@ from app.models.database import db
 from app.models.user import User
 from app.models.emergency_call import EmergencyCall
 
-bp = Blueprint('tracking', __name__)
+bp = Blueprint("tracking", __name__)
 
-@bp.route('/<token_nfc>/<int:call_id>')
+
+@bp.route("/<token_nfc>/<int:call_id>")
 def tracking_page(token_nfc, call_id):
     """
     Renderiza a página de rastreamento de um chamado de emergência ativo para o usuário identificado pelo token NFC e pelo ID do chamado.
@@ -36,19 +37,22 @@ def tracking_page(token_nfc, call_id):
     else:
         # Se não houver rota, usa a localização atual
         if emergency_call.localizacao_atual:
-            lat, lng = emergency_call.localizacao_atual.split(',')
-            last_location = {'lat': float(lat), 'lng': float(lng)}
+            lat, lng = emergency_call.localizacao_atual.split(",")
+            last_location = {"lat": float(lat), "lng": float(lng)}
         else:
             # Coordenadas padrão (Brasil)
-            last_location = {'lat': -15.7801, 'lng': -47.9292}
+            last_location = {"lat": -15.7801, "lng": -47.9292}
 
-    return render_template('tracking.html',
-                         user=user,
-                         call=emergency_call,
-                         last_location=last_location,
-                         route=emergency_call.route)
+    return render_template(
+        "tracking.html",
+        user=user,
+        call=emergency_call,
+        last_location=last_location,
+        route=emergency_call.route,
+    )
 
-@bp.route('/<token_nfc>/<int:call_id>/route')
+
+@bp.route("/<token_nfc>/<int:call_id>/route")
 def get_route(token_nfc, call_id):
     """
     Retorna a rota (lista de localizações) do chamado de emergência para o usuário e chamado informados.
@@ -57,9 +61,9 @@ def get_route(token_nfc, call_id):
     user = User.query.filter_by(token_nfc=token_nfc).first()
     if not user:
         return jsonify({"error": "Usuário não encontrado"}), 404
-    
+
     call = EmergencyCall.query.filter_by(id=call_id, user_id=user.id).first()
     if not call:
         return jsonify({"error": "Chamado não encontrado"}), 404
-    
+
     return jsonify({"route": call.route})

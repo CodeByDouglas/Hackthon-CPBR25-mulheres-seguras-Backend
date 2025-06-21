@@ -4,6 +4,6 @@ from app.models.database import db
 
 app = create_app()
 with app.app_context():
-    deleted = EmergencyCall.query.filter_by(status='Ativo').delete()
+    deleted = EmergencyCall.query.filter_by(status="Ativo").delete()
     db.session.commit()
-    print(f"Chamados ativos excluídos: {deleted}") 
+    print(f"Chamados ativos excluídos: {deleted}")

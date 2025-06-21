@@ -5,12 +5,13 @@ from twilio.base.exceptions import TwilioRestException
 
 # Carrega variáveis de ambiente do arquivo .env
 load_dotenv()
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-TWILIO_FROM_NUMBER = os.getenv('TWILIO_FROM_NUMBER')
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER")
 
 # Instancia o cliente Twilio
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
 
 def enviar_sms(to_number: str, body: str) -> str:
     """
@@ -23,9 +24,7 @@ def enviar_sms(to_number: str, body: str) -> str:
     try:
         # Envia a mensagem SMS
         message = client.messages.create(
-            to=to_number,
-            from_=TWILIO_FROM_NUMBER,
-            body=body
+            to=to_number, from_=TWILIO_FROM_NUMBER, body=body
         )
         return message.sid
     except TwilioRestException as e:
