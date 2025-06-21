@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Calor de Emergências</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/heatmap.css') }}" />
+</head>
+<body>
+    <div class="heatmap-container">
+        <div class="header">
+            <h1>Mapa de Calor</h1>
+            <p>Este mapa mostra as áreas com maior frequência de chamados de emergência.</p>
+        </div>
+        <div id="map"></div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script>
+        // Passa os pontos de calor do Flask para o JavaScript
+        window.heatPoints = {{ heat_points|tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/heatmap.js') }}"></script>
+</body>
+</html> 

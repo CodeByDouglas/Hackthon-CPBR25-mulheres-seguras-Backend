@@ -1,0 +1,65 @@
+body {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: #4a1d35;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #f5d5e2;
+}
+
+.heatmap-container {
+    padding: 2rem;
+    max-width: 900px;
+    width: 95vw;
+    margin: 2.5rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.header h1 {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    color: #f5d5e2;
+    font-size: 1.1rem;
+}
+
+#map {
+    height: 60vh;
+    width: 100%;
+    border-radius: 18px;
+    border: 3px solid #d94474;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .heatmap-container {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+
+    #map {
+        height: 70vh;
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+} 
