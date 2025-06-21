@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-    background: #23243a;
+    background: #4a1d35;
     min-height: 100vh;
     margin: 0;
     display: flex;
@@ -10,9 +10,9 @@ body {
 }
 
 .tracking-container {
-    background: #2d2e48;
+    background: #f5d5e2;
     border-radius: 18px;
-    box-shadow: 0 4px 24px 0 rgba(34, 36, 58, 0.25);
+    box-shadow: none;
     padding: 2.5rem 2rem 2rem 2rem;
     max-width: 370px;
     width: 95vw;
@@ -35,16 +35,28 @@ body {
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #b18be4;
-    background: #393a56;
-    box-shadow: 0 2px 8px 0 rgba(177, 139, 228, 0.10);
+    border: 4px solid #d94474;
+    background: #ffffff;
+    box-shadow: none;
 }
 
 .user-name {
-    color: #b18be4;
+    color: #4a1d35;
     font-size: 1.35rem;
     font-weight: 700;
     margin: 0;
+    text-align: center;
+}
+
+.info-box {
+    background: transparent;
+    color: #4a1d35;
+    border: 2px solid #d94474;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin: 0.7rem 0;
+    padding: 0.7rem 1rem;
     text-align: center;
 }
 
@@ -53,8 +65,28 @@ body {
     width: 100%;
     border-radius: 14px;
     margin-top: 1.2rem;
-    box-shadow: 0 2px 8px 0 rgba(177, 139, 228, 0.10);
-    border: 2px solid #393a56;
+    box-shadow: none;
+    border: 2px solid #d94474;
+}
+
+#btn-google-maps {
+    display: block;
+    margin: 1.2rem auto 0 auto;
+    background: #d94474;
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.08rem;
+    box-shadow: none;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+#btn-google-maps:hover {
+    filter: brightness(1.1);
 }
 
 @media (max-width: 600px) {
